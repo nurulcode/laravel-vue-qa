@@ -13,6 +13,7 @@ class Question extends Model
         return $this->belongsTo(User::class);
     }
 
+    // set
     public function setTitleAttribute($value)
     {
         $this->attributes['title'] = $value;
