@@ -43,6 +43,9 @@
                                 </h3>
                                 {{ Str::limit($question->body, 250) }}
                             </div>
+                            <div class="d-flex flex-column counters">
+                                <a href="{{ route('questions.edit', $question->id)}}" class="btn btn-outline-info btn-sm">Edit</a>
+                            </div>
                         </div>
                         <hr>
                     @endforeach
