@@ -13,10 +13,22 @@ class Question extends Model
         return $this->belongsTo(User::class);
     }
 
-    // set
+
     public function setTitleAttribute($value)
     {
         $this->attributes['title'] = $value;
         $this->attributes['slug'] = Str::slug($value);
     }
+
+    public function getUrlAttribute()
+    {
+        return route('questions.show', $this->id);
+    }
+
+    public function getCreatedDate()
+    {
+        // format(d/m/Y)
+        return $this->created_at->diffForHumans();
+    }
+
 }
