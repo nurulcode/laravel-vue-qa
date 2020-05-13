@@ -25,6 +25,14 @@ class AuthServiceProvider extends ServiceProvider
     {
         $this->registerPolicies();
 
-        //
+        // hanya user yang membuat pertanyaan yang bisa mengupdate dan hapus pertanyaan
+        Gate::define('update-question', function($user, $question) {
+            return $user->id === $question->user_id;
+        });
+
+        Gate::define('delete-question', function($user, $question) {
+            return $user->id === $question->user_id;
+        });
+        // end
     }
 }
