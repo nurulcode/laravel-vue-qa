@@ -15,8 +15,6 @@
                 </div>
 
                 <div class="card-body">
-                    @include('layouts._messages')
-
                     @foreach ($questions as $question)
                         <div class="media">
                             <div class="d-flex flex-column counters">
@@ -31,8 +29,18 @@
                                 </div>
                             </div>
                             <div class="media-body">
-                                <h3 class="mt-0">
-                                    <a href="{{ $question->url }}">{{ $question->title }}</a>
+                                <div class="d-flex align-items-center">
+                                    <h3 class="mt-0 text-center"> <a href="{{ $question->url }}">{{ $question->title }}</a> </h3>
+                                        <div class="ml-auto">
+                                            <a href="{{ route('questions.edit', $question->id)}}" class="btn btn-outline-info btn-sm btn-block">Edit</a>
+                                            {{-- <a href="#" class="btn btn-outline-info btn-sm btn-block delete" question-id="{{ $question->id }}">Delete</a> --}}
+                                            <form action="{{ route('questions.destroy', $question->id)}}" method="post">
+                                                @method('DELETE')
+                                                @csrf
+                                                <button type="submit" class="btn btn-outline-danger btn-sm btn-block mt-2" onclick="return confirm('Are you sure?')">Delete</button>
+                                            </form>
+                                        </div>
+                                </div>
                                     <p class="lead">
                                         Asked by
                                         <a href="{{ $question->user->url }}">
@@ -40,11 +48,9 @@
                                         </a>
                                         <small class="text-muted">{{ $question->created_date }}</small>
                                     </p>
-                                </h3>
-                                {{ Str::limit($question->body, 250) }}
-                            </div>
-                            <div class="d-flex flex-column counters">
-                                <a href="{{ route('questions.edit', $question->id)}}" class="btn btn-outline-info btn-sm">Edit</a>
+                                <p class="text-justify">
+                                    {{ Str::limit($question->body, 250) }}
+                                </p>
                             </div>
                         </div>
                         <hr>
@@ -55,4 +61,31 @@
         </div>
     </div>
 </div>
+@endsection
+
+
+@section('footer')
+    <script>
+        $(document).ready(() => {
+            $('.delete').click(function() {
+            let id = $(this).attr('question-id');
+
+            swal({
+                title: "Are you sure?",
+                text: "Once deleted, you will not be able to recover this imaginary file!",
+                icon: "warning",
+                buttons: true,
+                dangerMode: true,
+            })
+            .then((willDelete) => {
+                if (willDelete) {
+                window.location = `/api/questions/${id}/destroy`
+                }
+            });
+
+          });
+        })
+    </script>
+
+
 @endsection
