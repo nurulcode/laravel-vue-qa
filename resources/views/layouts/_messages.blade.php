@@ -5,23 +5,28 @@
             <span aria-hidden="true">&times;</span>
         </button>
     </div>
-    <div class="toast" role="alert" aria-live="assertive" aria-atomic="true">
-        <div class="toast-header">
-          <img src="..." class="rounded mr-2" alt="...">
-          <strong class="mr-auto">Bootstrap</strong>
-          <small>11 mins ago</small>
-          <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="toast-body">
-          Hello, world! This is a toast message.
-        </div>
-    </div>
 @endif --}}
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
 <script>
+    toastr.options = {
+        "closeButton": false,
+        "debug": false,
+        "newestOnTop": false,
+        "progressBar": true,
+        "positionClass": "toast-top-right",
+        "preventDuplicates": false,
+        "onclick": null,
+        "showDuration": "300",
+        "hideDuration": "1000",
+        "timeOut": "3000",
+        "extendedTimeOut": "1000",
+        "showEasing": "swing",
+        "hideEasing": "linear",
+        "showMethod": "fadeIn",
+        "hideMethod": "fadeOut"
+    }
+
     @if (Session::has('success'))
-        toastr.success("{{ Session::get('success') }}", 'success')
+        toastr["success"]("{{ Session::get('success') }}")
     @endif
 </script>
