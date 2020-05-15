@@ -22,7 +22,7 @@
                                     <strong>{{ $question->votes }}</strong> {{ Str::plural('vote',$question->votes) }}
                                 </div>
                                 <div class="status {{ $question->status }}">
-                                    <strong>{{ $question->answers }}</strong> {{ Str::plural('answer',$question->answers) }}
+                                    <strong>{{ $question->answers_count }}</strong> {{ Str::plural('answer',$question->answers_count) }}
                                 </div>
                                 <div class="view">
                                     {{ $question->views ." ". Str::plural('view',$question->views) }}
@@ -30,7 +30,7 @@
                             </div>
                             <div class="media-body">
                                 <div class="d-flex align-items-center">
-                                    <h3 class="mt-0 text-center"> <a href="{{ $question->url }}">{{ $question->title }}</a> </h3>
+                                    <h3 class="mt-0 text-justify mr-2"> <a href="{{ $question->url }}">{{ $question->title }}</a> </h3>
                                         <div class="ml-auto">
                                             {{-- Gate --}}
                                             {{-- @if (Auth::user()->can('update-question', $question))

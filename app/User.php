@@ -37,12 +37,13 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-    // set
+    // relasi
     public function questions()
     {
         return $this->hasMany(Question::class);
     }
 
+    // getAttribute
     public function getUrlAttribute()
     {
         return '#';
