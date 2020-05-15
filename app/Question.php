@@ -14,12 +14,10 @@ class Question extends Model
         return $this->belongsTo(User::class);
     }
 
-
     public function answers()
     {
         return $this->hasMany(Answer::class);
     }
-
 
     // setAttribute
     public function setTitleAttribute($value)
@@ -34,7 +32,7 @@ class Question extends Model
         return route('questions.show', $this->slug);
     }
 
-    public function getCreatedDate()
+    public function getCreatedDateAttribute()
     {
         // format(d/m/Y)
         return $this->created_at->diffForHumans();
