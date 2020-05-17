@@ -52,11 +52,11 @@
             </div>
         </div>
     </div>
-    @include('answer._index', [
+    @include('answers._index', [
         'answersCount' => $question->answers_count,
         'answers' => $question->answers
     ])
 
-    @include('answer._create')
+    @include('answers._create')
 </div>
 @endsection

@@ -8,6 +8,7 @@
                 <hr>
                 @foreach ($answers as $answer)
                     <div class="media">
+
                         <div class="d-flex flex-column vote-controls">
                             <a title="This answer is useful" class="vote-up">
                                 <i class="fas fa-caret-up fa-3x"></i>
@@ -21,8 +22,27 @@
                             </a>
                             <span class="favorites-count">123</span>
                         </div>
+
+
                         <div class="media-body text-justify p-2">
-                            {!! $answer->body_html !!}
+                            <div class="d-flex align-items-center">
+                                <div class="mr-4">
+                                    {!! $answer->body_html !!}
+                                </div>
+                                <div class="ml-auto">
+                                    @can('update', $answer)
+                                        <a href="{{ route('questions.answers.edit',[ $question->id, $answer->id])}}" class="btn btn-outline-info btn-sm btn-block">Edit</a>
+                                    @endcan
+                                    @can('delete', $answer)
+                                        <form action="{{ route('questions.answers.destroy',[ $question->id, $answer->id])}}" method="post">
+                                            @method('DELETE')
+                                            @csrf
+                                            <button type="submit" class="btn btn-outline-danger btn-sm btn-block mt-2" onclick="return confirm('Are you sure?')">Delete</button>
+                                        </form>
+                                    @endcan
+                                </div>
+                            </div>
+
                             <div class="float-right">
                                 <span class="text-muted">
                                     Answered {{ $answer->created_date }}

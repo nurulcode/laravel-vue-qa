@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Answer;
 use App\Question;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class AnswerController extends Controller
 {
@@ -23,9 +24,11 @@ class AnswerController extends Controller
         //     'user_id' => \Auth::id()
         //     ]);
 
+        // not relasi in answers table
+        // $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade')
         $question->answers()->create( $request->validate([
             'body' => 'required'
-            ]) + ['user_id' => \Auth::id()]);
+            ]) + ['user_id' => Auth::id()]);
 
         return back()->with('success', 'Your anser has been submitted successfully');
     }
@@ -37,9 +40,10 @@ class AnswerController extends Controller
      * @param  \App\Answer  $answer
      * @return \Illuminate\Http\Response
      */
-    public function edit(Answer $answer)
+    public function edit(Question $question,Answer $answer)
     {
-        //
+        $this->authorize('update', $answer);
+        return view('answers.edit', compact('question', 'answer'));
     }
 
     /**
@@ -49,9 +53,14 @@ class AnswerController extends Controller
      * @param  \App\Answer  $answer
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Answer $answer)
+    public function update(Request $request, Question $question, Answer $answer)
     {
-        //
+        $this->authorize('update', $answer);
+        $answer->update( $request->validate([
+            'body' => 'required'
+            ]) );
+
+        return redirect()->route('questions.show', $question->slug)->with('success', 'Your anser has been submitted successfully');
     }
 
     /**

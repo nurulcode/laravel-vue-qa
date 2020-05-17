@@ -45,6 +45,8 @@ class QuestionsController extends Controller
      */
     public function store(AskQuestionRequest $request)
     {
+        // relasi in question table
+        // $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade')
         $request->user()->questions()->create($request->only('title', 'body'));
         return redirect()->route('questions.index')->with('success', 'Your question has bean submitted');
     }
