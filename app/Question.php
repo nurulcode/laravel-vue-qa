@@ -26,6 +26,12 @@ class Question extends Model
         $this->attributes['slug'] = Str::slug($value);
     }
 
+    public function acceptBestAnswer(Answer $answer)
+    {
+        $this->best_answer_id = $answer->id;
+        $this->save();
+    }
+
     // getAttribute
     public function getUrlAttribute()
     {
