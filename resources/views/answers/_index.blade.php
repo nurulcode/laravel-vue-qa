@@ -17,7 +17,7 @@
                             <a title="This answer is not useful" class="vote-down">
                                 <i class="fas fa-caret-down fa-3x"></i>
                             </a>
-                            <a title="Mark this answe as best anser" class="vote-accept mt-2 vote-accepted ">
+                            <a title="Mark this answe as best anser" class="{{ $answer->status }} mt-2 ">
                                 <i class="fas fa-check fa-2x"></i>
                             </a>
                             <span class="favorites-count">123</span>

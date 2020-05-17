@@ -31,7 +31,13 @@ class Answer extends Model
         return $this->created_at->diffForHumans();
     }
 
+    public function getStatusAttribute()
+    {
+        return $this->id === $this->question->best_answer_id ? 'vote-accepted' : '';
+    }
 
+
+    // method di jalankan terlebih dahulu sebelum controller
     public static function boot()
     {
         parent::boot();
@@ -39,6 +45,15 @@ class Answer extends Model
         // bila ada jawaban baru otomatis di di question->answers_count + 1
         static::created(function($answer) {
             $answer->question->increment('answers_count');
+        });
+
+        static::deleted(function($answer) {
+            $question = $answer->question;
+            $question->decrement('answers_count');
+            if ($question->best_answer_id === $answer->id) {
+                $question->best_answer_id = NULL;
+                $question->save();
+            }
         });
     }
 }
