@@ -14,7 +14,6 @@
                             </div>
                         </div>
                     </div>
-
                     <hr>
                     <div class="media">
                         <div class="d-flex flex-column vote-controls">
