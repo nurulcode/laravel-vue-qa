@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Answer extends Model
 {
+    use VotableTrait;
+
     protected $fillable = ['body', 'user_id'];
 
     // relasi
@@ -52,11 +54,13 @@ class Answer extends Model
     {
         parent::boot();
 
-        // bila ada jawaban baru otomatis di di question->answers_count + 1
+        // bila ada jawaban baru otomatis di question->answers_count + 1
         static::created(function($answer) {
             $answer->question->increment('answers_count');
         });
 
+
+        // bila ada jawaban di hapus otomatis di question->answers_count + 1
         static::deleted(function($answer) {
             // $question = $answer->question;
             $answer->question->decrement('answers_count');
@@ -65,21 +69,6 @@ class Answer extends Model
             //     $question->save();
             // }
         });
-    }
-
-    public function votes()
-    {
-        return $this->morphToMany(User::class, 'votable');
-    }
-
-    public function upVotes()
-    {
-        return $this->votes()->wherePivot('vote', 1);
-    }
-
-    public function downVotes()
-    {
-        return $this->votes()->wherePivot('vote', -1);
     }
 
 }
