@@ -38,6 +38,11 @@ class Question extends Model
         $this->attributes['slug'] = Str::slug($value);
     }
 
+    // public function setBodyAttribute($value)
+    // {
+    //     $this->attributes['body'] = $value;
+    // }
+
     // Set jabawat paling baik
     public function acceptBestAnswer(Answer $answer)
     {
