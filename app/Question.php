@@ -10,6 +10,9 @@ class Question extends Model
     use VotableTrait;
 
     protected $fillable = ['title', 'body'];
+
+    protected $appends = ['created_date'];
+
     // relasi
     public function user()
     {

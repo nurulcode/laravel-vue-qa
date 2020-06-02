@@ -12,7 +12,7 @@
 
 @php
     $formId = $name ."-". $model->id;
-    $formAction = "/{{ $fristURISegment }}/{{ $model->id }}/vote"
+    $formAction = "/$fristURISegment/$model->id/vote"
 @endphp
 
 
