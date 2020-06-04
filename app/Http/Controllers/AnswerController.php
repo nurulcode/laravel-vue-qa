@@ -58,7 +58,15 @@ class AnswerController extends Controller
         $this->authorize('update', $answer);
         $answer->update( $request->validate([
             'body' => 'required'
-            ]) );
+        ]) );
+
+        // if request json
+        if ($request->expectsJson()) {
+            return response()->json([
+                'message' => 'Your anser has been submitted successfully',
+                'body_html' => $answer->body_html
+            ]);
+        }
 
         return redirect()->route('questions.show', $question->slug)->with('success', 'Your anser has been submitted successfully');
     }

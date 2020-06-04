@@ -95,3 +95,7 @@
         border-bottom: 1px solid rgba($color: #000000, $alpha: 0.1);
     }
 }
+
+[v-cloak] {
+    display: none;
+}
