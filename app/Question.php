@@ -11,7 +11,7 @@ class Question extends Model
 
     protected $fillable = ['title', 'body'];
 
-    protected $appends = ['created_date'];
+    protected $appends = ['created_date', 'is_favorited', 'favorites_count'];
 
     // relasi
     public function user()
@@ -31,6 +31,7 @@ class Question extends Model
 
     public function isFavorited()
     {
+        // tbl favorites dimana user_id = userId dan nilainya leh besar dari 0;
         return $this->favorites()->where('user_id', auth()->id())->count() > 0;
     }
 

@@ -22,6 +22,11 @@ class FavoriteController extends Controller
     public function store(Question $question)
     {
         $question->favorites()->attach(auth()->id());
+
+        if (request()->expectsJson()) {
+            return response()->json(null, 200);
+        }
+
         return back();
     }
 
@@ -34,6 +39,11 @@ class FavoriteController extends Controller
     public function destroy(Question $question)
     {
         $question->favorites()->detach(auth()->id());
+
+        if (request()->expectsJson()) {
+            return response()->json(null, 200);
+        }
+
         return back();
     }
 }
