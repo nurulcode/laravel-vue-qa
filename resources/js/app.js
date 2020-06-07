@@ -8,11 +8,16 @@ require('./bootstrap');
 
 window.Vue = require('vue');
 
+// toast start
 import VueIziToast from 'vue-izitoast';
 // import 'izitoast/dist/css/iziToast.css';
 import 'izitoast/dist/css/iziToast.min.css';
 
 Vue.use(VueIziToast);
+// toast end
+import Authorization from './authorization/authorize'
+Vue.use(Authorization)
+
 
 /**
  * The following block of code may be used to automatically register your

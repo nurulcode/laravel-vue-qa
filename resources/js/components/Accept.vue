@@ -26,7 +26,6 @@ export default {
         return {
             isBest: this.answer.is_best,
             id: this.answer.id,
-            canAccept :true
         };
     },
     methods: {
@@ -42,7 +41,7 @@ export default {
     },
     computed: {
         canAccept() {
-            return true;
+            return this.authorize('accept', this.answer);
         },
         accepted() {
             return !this.canAccept && this.isBest;
