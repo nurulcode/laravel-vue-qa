@@ -81,7 +81,7 @@ class User extends Authenticatable
     public function voteQuestion(Question $question, $vote)
     {
         $voteQuestions = $this->voteQuestions();
-        $this->_vote($voteQuestions, $question, $vote);
+        return $this->_vote($voteQuestions, $question, $vote);
         // if ($voteQuestions->where('votable_id', $question->id)->exists()) {
         //     $voteQuestions->updateExistingPivot($question, ['vote' => $vote]);
         // }
@@ -100,7 +100,7 @@ class User extends Authenticatable
     public function voteAnswer(Answer $answer, $vote)
     {
         $voteAnswers = $this->voteAnswers();
-        $this->_vote($voteAnswers, $answer, $vote);
+        return $this->_vote($voteAnswers, $answer, $vote);
         // if ($voteAnswers->where('votable_id', $answer->id)->exists()) {
         //     $voteAnswers->updateExistingPivot($answer, ['vote' => $vote]);
         // }
@@ -131,6 +131,8 @@ class User extends Authenticatable
 
         $model->votes_count = $upVotes + $downVotes;
         $model->save();
+
+        return $model->votes_count;
     }
 
 

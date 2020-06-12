@@ -25,7 +25,7 @@ export default {
     data() {
         return {
             isBest: this.answer.is_best,
-            id: this.answer.id,
+            id: this.answer.id
         };
     },
     methods: {
@@ -41,7 +41,7 @@ export default {
     },
     computed: {
         canAccept() {
-            return this.authorize('accept', this.answer);
+            return this.authorize("accept", this.answer);
         },
         accepted() {
             return !this.canAccept && this.isBest;
@@ -49,6 +49,6 @@ export default {
         classes() {
             return ["mt-2", this.isBest ? "vote-accepted" : ""];
         }
-    },
+    }
 };
 </script>

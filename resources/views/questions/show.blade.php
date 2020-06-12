@@ -16,9 +16,10 @@
                     </div>
                     <hr>
                     <div class="media">
-                        @include('shared._vote', [
+                        {{-- @include('shared._vote', [
                             'model' => $question
-                        ])
+                        ]) --}}
+                        <vote :model="{{ $question }}" name="question"></vote>
                         <div class="media-body  text-justify">
                             {!! $question->body_html !!}
                             <div class="float-right">
