@@ -12,6 +12,12 @@
                         :answer="answer"
                         :key="answer.id"
                     ></answer>
+
+                    <div class="text-center mt-3" v-if="nextUrl">
+                        <button @click.prevent="fatch(nextUrl)" class="btn btn-outline-secondary">
+                            Load Answers
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -19,17 +25,40 @@
 </template>
 
 <script>
-import Answer from './Answer'
+import Answer from "./Answer";
 
 export default {
-    props: ['answers', 'count'],
+    props: ["question"],
     components: {
         Answer
     },
-    computed: {
-        title() {
-            return this.count + " " + (this.count > 1 ? 'Answers' : Answer)
+    data() {
+        return {
+            questionId: this.question.id,
+            count: this.question.answers_count,
+            answers: [],
+            nextUrl: null,
+        };
+    },
+
+    created() {
+        this.fatch(`/questions/${this.questionId}/answers`);
+    },
+
+    methods: {
+        fatch(endpoint) {
+            axios.get(endpoint).then(({data}) => {
+                console.log(data.next_page_url);
+
+                this.answers.push(...data.data)
+                this.nextUrl = data.next_page_url
+            });
         }
     },
-}
+    computed: {
+        title() {
+            return this.count + " " + (this.count > 1 ? "Answers" : Answer);
+        }
+    }
+};
 </script>
