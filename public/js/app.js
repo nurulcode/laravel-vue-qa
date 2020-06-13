@@ -2084,6 +2084,8 @@ __webpack_require__.r(__webpack_exports__);
         buttons: [["<button><b>YES</b></button>", function (instance, toast) {
           axios["delete"](_this2.endpoint).then(function (res) {
             $(_this2.$el).fadeOut(1000, function () {
+              _this2.$emit('deleted');
+
               _this2.$toast.success(res.data.message, "Success", {
                 timeout: 3000,
                 position: "topRight"
@@ -2172,6 +2174,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 //
 //
 //
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: ["question"],
@@ -2190,6 +2193,10 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
     this.fatch("/questions/".concat(this.questionId, "/answers"));
   },
   methods: {
+    remove: function remove(index) {
+      this.answers.splice(index, 1);
+      this.count--;
+    },
     fatch: function fatch(endpoint) {
       var _this = this;
 
@@ -2197,8 +2204,8 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
         var _this$answers;
 
         var data = _ref.data;
-        console.log(data.next_page_url);
 
+        // console.log(data.next_page_url);
         (_this$answers = _this.answers).push.apply(_this$answers, _toConsumableArray(data.data));
 
         _this.nextUrl = data.next_page_url;
@@ -38933,8 +38940,16 @@ var render = function() {
             _vm._v(" "),
             _c("hr"),
             _vm._v(" "),
-            _vm._l(_vm.answers, function(answer) {
-              return _c("answer", { key: answer.id, attrs: { answer: answer } })
+            _vm._l(_vm.answers, function(answer, index) {
+              return _c("answer", {
+                key: answer.id,
+                attrs: { answer: answer },
+                on: {
+                  deleted: function($event) {
+                    return _vm.remove(index)
+                  }
+                }
+              })
             }),
             _vm._v(" "),
             _vm.nextUrl

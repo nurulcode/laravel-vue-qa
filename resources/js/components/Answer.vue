@@ -112,6 +112,7 @@ export default {
                                 .delete(this.endpoint)
                                 .then(res => {
                                     $(this.$el).fadeOut(1000, () => {
+                                        this.$emit('deleted')
                                         this.$toast.success(
                                             res.data.message,
                                             "Success",
