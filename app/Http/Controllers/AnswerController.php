@@ -35,9 +35,17 @@ class AnswerController extends Controller
 
         // not relasi in answers table
         // $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade')
-        $question->answers()->create( $request->validate([
+        $answer = $question->answers()->create( $request->validate([
             'body' => 'required'
             ]) + ['user_id' => Auth::id()]);
+
+            if (request()->expectsJson()) {
+                return response()->json([
+                    'message' => 'Your anser has been submitted successfully',
+                     // Answer::with('user')->find($answer->id)
+                   'answer' => $answer->load('user')
+                    ]);
+            }
 
         return back()->with('success', 'Your anser has been submitted successfully');
     }
@@ -95,6 +103,7 @@ class AnswerController extends Controller
         if (request()->expectsJson()) {
             return response()->json([
                 'message' => 'Your anser has been removed',
+
             ]);
         }
         return back()->with('success', 'Your answer has been removed');
