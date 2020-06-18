@@ -72,7 +72,12 @@
                                             >Edit</a
                                         >
                                         <a
-                                            v-if="authorize('deleteQuestion', question)"
+                                            v-if="
+                                                authorize(
+                                                    'deleteQuestion',
+                                                    question
+                                                )
+                                            "
                                             @click.prevent="destroy"
                                             class="btn btn-outline-danger btn-sm btn-block mt-2"
                                             >Delete</a
@@ -92,117 +97,56 @@
     </div>
 </template>
 <script>
-import Vote from './Vote'
-import UserInfo from './UserInfo'
+import Vote from "./Vote";
+import UserInfo from "./UserInfo";
+import modification from "../mixins/modification";
 
 export default {
     props: ["question"],
     components: {
-        Vote, UserInfo
+        Vote,
+        UserInfo
     },
+    mixins: [modification],
+
     data() {
         return {
             title: this.question.title,
             bodyHtml: this.question.body_html,
-
-            editing: false,
             body: this.question.body,
             id: this.question.id,
             beforeEditCache: null
         };
     },
     methods: {
-        edit() {
+        setEditCache() {
             this.beforeEditCache = {
-                body : this.body,
-                title : this.title
+                body: this.body,
+                title: this.title
             };
-            this.editing = true;
         },
-        cancel() {
+        restoreFromCache() {
             this.body = this.beforeEditCache.body;
             this.title = this.beforeEditCache.title;
-            this.editing = false;
         },
-        update() {
-            axios
-                .put(this.endpoint, {
-                    body: this.body,
-                    title: this.title
-                })
-                .then(res => {
-                    console.log(res);
-                    this.bodyHtml = res.data.body_html;
-                    this.editing = false;
+        payload() {
+            return {
+                body: this.body,
+                title: this.title
+            };
+        },
 
-                    this.$toast.success(res.data.message, "Success", {
-                        timeout: 3000,
-                        position: "topRight"
-                    });
-                })
-                .catch(err => {
-                    this.$toast.error(res.response.data.message, "Error", {
-                        timeout: 3000,
-                        position: "topRight"
-                    });
+        delete() {
+            axios.delete(this.endpoint).then(res => {
+                this.$toast.success(res.data.message, "Success", {
+                    timeout: 2500,
+                    position: "topRight"
                 });
-        },
-        destroy() {
-            this.$toast.question("Are you sure about that?", "Confirm", {
-                timeout: 20000,
-                close: false,
-                overlay: true,
-                displayMode: "once",
-                id: "question",
-                zindex: 999,
-                title: "Hey",
-                message: "",
-                position: "center",
-                buttons: [
-                    [
-                        "<button><b>YES</b></button>",
-                        (instance, toast) => {
-                            axios
-                                .delete(this.endpoint)
-                                .then(res => {
-                                    this.$toast.success(
-                                        res.data.message,
-                                        "Success",
-                                        { timeout: 2500 }
-                                    );
-                                })
-
-
-                            setTimeout(() => {
-                                window.location.href = "/questions";
-                            }, 3000);
-
-                            instance.hide(
-                                { transitionOut: "fadeOut" },
-                                toast,
-                                "button"
-                            );
-                        },
-                        true
-                    ],
-                    [
-                        "<button>NO</button>",
-                        function(instance, toast) {
-                            instance.hide(
-                                { transitionOut: "fadeOut" },
-                                toast,
-                                "button"
-                            );
-                        }
-                    ]
-                ],
-                onClosing: function(instance, toast, closedBy) {
-                    console.info("Closing | closedBy: " + closedBy);
-                },
-                onClosed: function(instance, toast, closedBy) {
-                    console.info("Closed | closedBy: " + closedBy);
-                }
             });
+
+            setTimeout(() => {
+                window.location.href = "/questions";
+            }, 3000);
         }
     },
     computed: {

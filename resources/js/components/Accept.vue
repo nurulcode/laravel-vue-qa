@@ -31,8 +31,6 @@ export default {
     },
     created() {
         EventBus.$on("accepted", id => {
-            console.log(id);
-
             this.isBest = id === this.id;
         });
     },

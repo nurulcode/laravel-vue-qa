@@ -1943,7 +1943,6 @@ __webpack_require__.r(__webpack_exports__);
     var _this = this;
 
     _event_bus__WEBPACK_IMPORTED_MODULE_0__["EventBus"].$on("accepted", function (id) {
-      console.log(id);
       _this.isBest = id === _this.id;
     });
   },
@@ -1988,6 +1987,7 @@ __webpack_require__.r(__webpack_exports__);
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _Vote__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Vote */ "./resources/js/components/Vote.vue");
 /* harmony import */ var _UserInfo__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./UserInfo */ "./resources/js/components/UserInfo.vue");
+/* harmony import */ var _mixins_modification__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../mixins/modification */ "./resources/js/mixins/modification.js");
 //
 //
 //
@@ -2039,6 +2039,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -2047,9 +2048,9 @@ __webpack_require__.r(__webpack_exports__);
     Vote: _Vote__WEBPACK_IMPORTED_MODULE_0__["default"],
     UserInfo: _UserInfo__WEBPACK_IMPORTED_MODULE_1__["default"]
   },
+  mixins: [_mixins_modification__WEBPACK_IMPORTED_MODULE_2__["default"]],
   data: function data() {
     return {
-      editing: false,
       body: this.answer.body,
       bodyHtml: this.answer.body_html,
       id: this.answer.id,
@@ -2058,78 +2059,34 @@ __webpack_require__.r(__webpack_exports__);
     };
   },
   methods: {
-    edit: function edit() {
+    setEditCache: function setEditCache() {
       this.beforeEditCache = this.body;
-      this.editing = true;
     },
-    cancel: function cancel() {
+    restoreFromCache: function restoreFromCache() {
       this.body = this.beforeEditCache;
-      this.editing = false;
     },
-    update: function update() {
+    payload: function payload() {
+      return {
+        body: this.body
+      };
+    },
+    "delete": function _delete() {
       var _this = this;
 
-      axios.patch(this.endpoint, {
-        body: this.body
-      }).then(function (res) {
-        // console.log(res);
-        _this.editing = false;
-        _this.bodyHtml = res.data.body_html;
+      axios["delete"](this.endpoint).then(function (res) {
+        $(_this.$el).fadeOut(1000, function () {
+          _this.$emit("deleted");
 
-        _this.$toast.success(res.data.message, "Success", {
-          timeout: 3000,
-          position: "topRight"
+          _this.$toast.success(res.data.message, "Success", {
+            timeout: 3000,
+            position: "topRight"
+          });
         });
       })["catch"](function (err) {
         _this.$toast.error(res.response.data.message, "Error", {
           timeout: 3000,
           position: "topRight"
         });
-      });
-    },
-    destroy: function destroy() {
-      var _this2 = this;
-
-      this.$toast.question("Are you sure about that?", "Confirm", {
-        timeout: 20000,
-        close: false,
-        overlay: true,
-        displayMode: "once",
-        id: "question",
-        zindex: 999,
-        title: "Hey",
-        message: "",
-        position: "center",
-        buttons: [["<button><b>YES</b></button>", function (instance, toast) {
-          axios["delete"](_this2.endpoint).then(function (res) {
-            $(_this2.$el).fadeOut(1000, function () {
-              _this2.$emit('deleted');
-
-              _this2.$toast.success(res.data.message, "Success", {
-                timeout: 3000,
-                position: "topRight"
-              });
-            });
-          })["catch"](function (err) {
-            _this2.$toast.error(res.response.data.message, "Error", {
-              timeout: 3000,
-              position: "topRight"
-            });
-          });
-          instance.hide({
-            transitionOut: "fadeOut"
-          }, toast, "button");
-        }, true], ["<button>NO</button>", function (instance, toast) {
-          instance.hide({
-            transitionOut: "fadeOut"
-          }, toast, "button");
-        }]],
-        onClosing: function onClosing(instance, toast, closedBy) {
-          console.info("Closing | closedBy: " + closedBy);
-        },
-        onClosed: function onClosed(instance, toast, closedBy) {
-          console.info("Closed | closedBy: " + closedBy);
-        }
       });
     }
   },
@@ -2237,7 +2194,6 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 
         var data = _ref.data;
 
-        // console.log(data.next_page_url);
         (_this$answers = _this.answers).push.apply(_this$answers, _toConsumableArray(data.data));
 
         _this.nextUrl = data.next_page_url;
@@ -2419,6 +2375,7 @@ __webpack_require__.r(__webpack_exports__);
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _Vote__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Vote */ "./resources/js/components/Vote.vue");
 /* harmony import */ var _UserInfo__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./UserInfo */ "./resources/js/components/UserInfo.vue");
+/* harmony import */ var _mixins_modification__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../mixins/modification */ "./resources/js/mixins/modification.js");
 //
 //
 //
@@ -2512,6 +2469,12 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -2520,88 +2483,45 @@ __webpack_require__.r(__webpack_exports__);
     Vote: _Vote__WEBPACK_IMPORTED_MODULE_0__["default"],
     UserInfo: _UserInfo__WEBPACK_IMPORTED_MODULE_1__["default"]
   },
+  mixins: [_mixins_modification__WEBPACK_IMPORTED_MODULE_2__["default"]],
   data: function data() {
     return {
       title: this.question.title,
       bodyHtml: this.question.body_html,
-      editing: false,
       body: this.question.body,
       id: this.question.id,
       beforeEditCache: null
     };
   },
   methods: {
-    edit: function edit() {
+    setEditCache: function setEditCache() {
       this.beforeEditCache = {
         body: this.body,
         title: this.title
       };
-      this.editing = true;
     },
-    cancel: function cancel() {
+    restoreFromCache: function restoreFromCache() {
       this.body = this.beforeEditCache.body;
       this.title = this.beforeEditCache.title;
-      this.editing = false;
     },
-    update: function update() {
-      var _this = this;
-
-      axios.put(this.endpoint, {
+    payload: function payload() {
+      return {
         body: this.body,
         title: this.title
-      }).then(function (res) {
-        console.log(res);
-        _this.bodyHtml = res.data.body_html;
-        _this.editing = false;
-
-        _this.$toast.success(res.data.message, "Success", {
-          timeout: 3000,
-          position: "topRight"
-        });
-      })["catch"](function (err) {
-        _this.$toast.error(res.response.data.message, "Error", {
-          timeout: 3000,
-          position: "topRight"
-        });
-      });
+      };
     },
-    destroy: function destroy() {
-      var _this2 = this;
+    "delete": function _delete() {
+      var _this = this;
 
-      this.$toast.question("Are you sure about that?", "Confirm", {
-        timeout: 20000,
-        close: false,
-        overlay: true,
-        displayMode: "once",
-        id: "question",
-        zindex: 999,
-        title: "Hey",
-        message: "",
-        position: "center",
-        buttons: [["<button><b>YES</b></button>", function (instance, toast) {
-          axios["delete"](_this2.endpoint).then(function (res) {
-            _this2.$toast.success(res.data.message, "Success", {
-              timeout: 2500
-            });
-          });
-          setTimeout(function () {
-            window.location.href = "/questions";
-          }, 3000);
-          instance.hide({
-            transitionOut: "fadeOut"
-          }, toast, "button");
-        }, true], ["<button>NO</button>", function (instance, toast) {
-          instance.hide({
-            transitionOut: "fadeOut"
-          }, toast, "button");
-        }]],
-        onClosing: function onClosing(instance, toast, closedBy) {
-          console.info("Closing | closedBy: " + closedBy);
-        },
-        onClosed: function onClosed(instance, toast, closedBy) {
-          console.info("Closed | closedBy: " + closedBy);
-        }
+      axios["delete"](this.endpoint).then(function (res) {
+        _this.$toast.success(res.data.message, "Success", {
+          timeout: 2500,
+          position: "topRight"
+        });
       });
+      setTimeout(function () {
+        window.location.href = "/questions";
+      }, 3000);
     }
   },
   computed: {
@@ -52751,6 +52671,96 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(vue__WEBPACK_IMPORTED_MODULE_0__);
 
 var EventBus = new vue__WEBPACK_IMPORTED_MODULE_0___default.a();
+
+/***/ }),
+
+/***/ "./resources/js/mixins/modification.js":
+/*!*********************************************!*\
+  !*** ./resources/js/mixins/modification.js ***!
+  \*********************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony default export */ __webpack_exports__["default"] = ({
+  data: function data() {
+    return {
+      editing: false
+    };
+  },
+  methods: {
+    edit: function edit() {
+      this.setEditCache();
+      this.editing = true;
+    },
+    cancel: function cancel() {
+      this.restoreFromCache();
+      this.editing = false;
+    },
+    setEditCache: function setEditCache() {},
+    restoreFromCache: function restoreFromCache() {},
+    update: function update() {
+      var _this = this;
+
+      axios.put(this.endpoint, this.payload()).then(function (res) {
+        _this.bodyHtml = res.data.body_html;
+
+        _this.toastSuccess(res);
+
+        _this.editing = false;
+      })["catch"](function (err) {
+        _this.toastError(res);
+      });
+    },
+    payload: function payload() {},
+    destroy: function destroy() {
+      var _this2 = this;
+
+      this.$toast.question("Are you sure about that?", "Confirm", {
+        timeout: 20000,
+        close: false,
+        overlay: true,
+        displayMode: "once",
+        id: "question",
+        zindex: 999,
+        title: "Hey",
+        message: "",
+        position: "center",
+        buttons: [["<button><b>YES</b></button>", function (instance, toast) {
+          _this2["delete"]();
+
+          instance.hide({
+            transitionOut: "fadeOut"
+          }, toast, "button");
+        }, true], ["<button>NO</button>", function (instance, toast) {
+          instance.hide({
+            transitionOut: "fadeOut"
+          }, toast, "button");
+        }]],
+        onClosing: function onClosing(instance, toast, closedBy) {
+          console.info("Closing | closedBy: " + closedBy);
+        },
+        onClosed: function onClosed(instance, toast, closedBy) {
+          console.info("Closed | closedBy: " + closedBy);
+        }
+      });
+    },
+    "delete": function _delete() {},
+    toastSuccess: function toastSuccess(res) {
+      this.$toast.success(res.data.message, "Success", {
+        timeout: 3000,
+        position: "topRight"
+      });
+    },
+    toastError: function toastError(res) {
+      this.$toast.error(res.response.data.message, "Error", {
+        timeout: 3000,
+        position: "topRight"
+      });
+    }
+  }
+});
 
 /***/ }),
 

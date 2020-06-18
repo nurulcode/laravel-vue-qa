@@ -67,8 +67,6 @@ export default {
         },
         fatch(endpoint) {
             axios.get(endpoint).then(({ data }) => {
-                // console.log(data.next_page_url);
-
                 this.answers.push(...data.data);
                 this.nextUrl = data.next_page_url;
             });
