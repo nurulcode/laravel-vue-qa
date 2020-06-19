@@ -20,7 +20,7 @@
                                 @click.prevent="fatch(nextUrl)"
                                 class="btn btn-outline-secondary"
                             >
-                                Load Answers
+                                {{ load }}
                             </button>
                         </div>
                     </div>
@@ -48,7 +48,8 @@ export default {
             questionId: this.question.id,
             count: this.question.answers_count,
             answers: [],
-            nextUrl: null
+            nextUrl: null,
+            load: 'Load Answers'
         };
     },
 

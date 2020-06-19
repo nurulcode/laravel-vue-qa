@@ -25,7 +25,7 @@
                         <div class="media-body  text-justify">
                             <form v-if="editing" @submit.prevent="update">
                                 <div class="form-group">
-                                    <label for="question-title">Titile</label>
+                                    <label for="question-title">Title</label>
                                     <input
                                         type="text"
                                         class="form-control"
@@ -37,13 +37,14 @@
 
                                 <div class="form-group">
                                     <label>Question</label>
-
-                                    <textarea
-                                        v-model="body"
-                                        rows="10"
-                                        class="form-control"
-                                        required
-                                    ></textarea>
+                                    <m-editor :body="body">
+                                        <textarea
+                                            v-model="body"
+                                            rows="10"
+                                            class="form-control"
+                                            required
+                                        ></textarea>
+                                    </m-editor>
                                 </div>
                                 <button
                                     class="btn btn-info btn-sm"
@@ -99,13 +100,15 @@
 <script>
 import Vote from "./Vote";
 import UserInfo from "./UserInfo";
+import MEditor from "./MEditor";
 import modification from "../mixins/modification";
 
 export default {
     props: ["question"],
     components: {
         Vote,
-        UserInfo
+        UserInfo,
+        MEditor
     },
     mixins: [modification],
 
