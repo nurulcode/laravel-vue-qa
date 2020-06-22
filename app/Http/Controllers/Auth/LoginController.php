@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
+
 
 class LoginController extends Controller
 {
@@ -57,5 +59,20 @@ class LoginController extends Controller
             return redirect()->route('home');
         }
         return redirect()->route('login')->with('error', 'Incorrect email or password');
+    }
+
+    public function getToken(Request $request)
+    {
+        $request->request->add([
+            'grant_type' => 'password',
+            'client_id' => 2,
+            'client_secret' => 'XupwPuAgK6vYhqTKw7hccTD6J2j7CL6Fnw0SDQkx',
+            'username' => $request->username,
+            'password' => $request->password,
+        ]);
+
+        $requestToken = Request::create(env('APP_URL'). '/oauth/token', 'post');
+        $response = Route::dispatch($requestToken);
+        return $response;
     }
 }

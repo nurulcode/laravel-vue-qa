@@ -8,6 +8,8 @@ use App\Policies\QuestionPolicy;
 use App\Question;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Gate;
+use Laravel\Passport\Passport;
+
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -30,6 +32,7 @@ class AuthServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->registerPolicies();
+        Passport::routes();
 
         // hanya user yang membuat pertanyaan yang bisa mengupdate dan hapus pertanyaan
         // Gate::define('update-question', function($user, $question) {
