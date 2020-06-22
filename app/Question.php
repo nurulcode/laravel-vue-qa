@@ -80,6 +80,7 @@ class Question extends Model
     public function getBodyHtmlAttribute()
     {
         return \Parsedown::instance()->text($this->body);
+        // return clean($this->bodyHtml());
     }
 
     public function getIsFavoritedAttribute()

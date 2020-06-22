@@ -23,7 +23,12 @@
                             name="question"
                         ></vote>
                         <div class="media-body  text-justify">
-                            <form v-if="editing" @submit.prevent="update">
+                            <form
+                                v-show="
+                                    authorize('modify', question) && editing
+                                "
+                                @submit.prevent="update"
+                            >
                                 <div class="form-group">
                                     <label for="question-title">Title</label>
                                     <input
@@ -37,7 +42,7 @@
 
                                 <div class="form-group">
                                     <label>Question</label>
-                                    <m-editor :body="body">
+                                    <m-editor :body="body" :name="uniqueName">
                                         <textarea
                                             v-model="body"
                                             rows="10"
@@ -60,10 +65,13 @@
                                     Cancle
                                 </button>
                             </form>
-                            <div v-else>
+                            <div v-show="!editing">
                                 <div class="d-flex align-items-center">
                                     <div class="mr-4">
-                                        <div v-html="bodyHtml"></div>
+                                        <div
+                                            v-html="bodyHtml"
+                                            ref="bodyHtml"
+                                        ></div>
                                     </div>
                                     <div class="ml-auto">
                                         <a
@@ -98,18 +106,11 @@
     </div>
 </template>
 <script>
-import Vote from "./Vote";
-import UserInfo from "./UserInfo";
-import MEditor from "./MEditor";
 import modification from "../mixins/modification";
 
 export default {
     props: ["question"],
-    components: {
-        Vote,
-        UserInfo,
-        MEditor
-    },
+
     mixins: [modification],
 
     data() {
@@ -158,6 +159,9 @@ export default {
         },
         endpoint() {
             return `/questions/${this.id}`;
+        },
+        uniqueName() {
+            return `question-${this.id}`;
         }
     }
 };

@@ -2,13 +2,18 @@
     <div class="media post">
         <vote :model="answer" name="answer"></vote>
         <div class="media-body text-justify p-2">
-            <form v-if="editing" @submit.prevent="update">
+            <form
+                v-show="authorize('modify', answer) && editing"
+                @submit.prevent="update"
+            >
                 <div class="form-group">
-                    <textarea
-                        v-model="body"
-                        rows="5"
-                        class="form-control"
-                    ></textarea>
+                     <m-editor :body="body" :name="uniqueName">
+                        <textarea
+                            v-model="body"
+                            rows="5"
+                            class="form-control"
+                        ></textarea>
+                    </m-editor>
                 </div>
                 <button class="btn btn-info btn-sm" :disabled="isInvalid">
                     Update
@@ -21,10 +26,10 @@
                     Cancle
                 </button>
             </form>
-            <div v-else>
+            <div v-show="!editing">
                 <div class="d-flex align-items-center">
                     <div class="mr-4">
-                        <div v-html="bodyHtml"></div>
+                        <div v-html="bodyHtml" ref="bodyHtml"></div>
                     </div>
                     <div class="ml-auto">
                         <a
@@ -50,16 +55,11 @@
 </template>
 
 <script>
-import Vote from "./Vote";
-import UserInfo from "./UserInfo";
 import modification from "../mixins/modification";
 
 export default {
     props: ["answer"],
-    components: {
-        Vote,
-        UserInfo
-    },
+
     mixins: [modification],
     data() {
         return {
@@ -109,6 +109,9 @@ export default {
         },
         endpoint() {
             return `/questions/${this.questionId}/answers/${this.id}`;
+        },
+        uniqueName() {
+            return `answer-${this.id}`
         }
     }
 };

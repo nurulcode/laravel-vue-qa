@@ -1,9 +1,21 @@
+import Vote from "../components/Vote";
+import UserInfo from "../components/UserInfo";
+import MEditor from "../components/MEditor";
+
+import highlight from "./highlight";
+
 export default {
+    components: {
+        Vote,
+        UserInfo,
+        MEditor
+    },
     data() {
         return {
             editing: false
         };
     },
+    mixins: [highlight],
     methods: {
         edit() {
             this.setEditCache();
@@ -20,11 +32,14 @@ export default {
                 .put(this.endpoint, this.payload())
                 .then(res => {
                     this.bodyHtml = res.data.body_html;
-                    this.toastSuccess(res)
+                    this.toastSuccess(res);
                     this.editing = false;
                 })
+                .then(() => {
+                    this.highlight();
+                })
                 .catch(err => {
-                    this.toastError(res)
+                    this.toastError(res);
                 });
         },
         payload() {},
@@ -84,5 +99,8 @@ export default {
                 position: "topRight"
             });
         }
+    },
+    mounted() {
+        this.highlight();
     }
 };

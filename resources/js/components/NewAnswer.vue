@@ -11,13 +11,15 @@
                 <div class="card-body">
                     <form @submit.prevent="create">
                         <div class="form-group">
-                            <textarea
-                                v-model="body"
-                                name="body"
-                                class="form-control"
-                                rows="5"
-                                required
-                            ></textarea>
+                            <m-editor :body="body" name="new-answer">
+                                <textarea
+                                    v-model="body"
+                                    name="body"
+                                    class="form-control"
+                                    rows="5"
+                                    required
+                                ></textarea>
+                            </m-editor>
                         </div>
 
                         <div class="form-group">
@@ -37,8 +39,13 @@
 </template>
 
 <script>
+import MEditor from './MEditor'
+
 export default {
     props: ["questionId"],
+    components: {
+        MEditor
+    },
     data() {
         return {
             body: ""
