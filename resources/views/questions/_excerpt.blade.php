@@ -50,7 +50,8 @@
                 <small class="text-muted">{{ $question->created_date }}</small>
             </p>
         <p class="text-justify">
-            {!! Str::limit(strip_tags($question->body), 250) !!}
+            {{-- {!! Str::limit(strip_tags($question->body), 250) !!} --}}
+            <div class="excerpt">{{ $question->excerpt(350) }}</div>
         </p>
     </div>
 </div>
