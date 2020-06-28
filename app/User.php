@@ -59,9 +59,8 @@ class User extends Authenticatable
         if ($type === 'questions') {
             $posts =  $this->questions()->get();
         } else {
-            $posts = $this->answers()->with('question')->get();
-            // $posts = $this->answers()->get();
-
+            // $posts = $this->answers()->with('question')->get();
+            $posts = $this->answers()->get();
 
             if ($type !== 'answers') {
                 $posts2 = $this->questions()->get();
@@ -79,7 +78,7 @@ class User extends Authenticatable
             if ($post instanceof Answer) {
                 $item['type'] = 'A';
                 $item['title'] = $post->question->title;
-                $item['accepted'] = $post->question->best_answer_id === $post->id ? true : false;
+                $item['accepted'] = (bool) $post->question->best_answer_id === $post->id;
             } elseif ($post instanceof Question) {
                 $item['type'] = 'Q';
                 $item['title'] = $post->title;
@@ -88,7 +87,7 @@ class User extends Authenticatable
 
             $data->push($item);
         }
-        return $data->sortBy('votes_count')->values()->all();
+        return $data->sortBy('votes_count', 'desc')->values()->all();
         // return $posts;
 
     }
