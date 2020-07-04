@@ -10,13 +10,14 @@ window.Vue = require('vue');
 
 // toast start
 import VueIziToast from 'vue-izitoast';
-// import 'izitoast/dist/css/iziToast.css';
 import 'izitoast/dist/css/iziToast.min.css';
-
-Vue.use(VueIziToast);
 // toast end
 import Authorization from './authorization/authorize'
+import router from './router'
+
 Vue.use(Authorization)
+Vue.use(VueIziToast);
+
 
 
 /**
@@ -27,21 +28,7 @@ Vue.use(Authorization)
  * Eg. ./components/ExampleComponent.vue -> <example-component></example-component>
  */
 
-// const files = require.context('./', true, /\.vue$/i)
-// files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default))
-
-// Vue.component('user-info', require('./components/UserInfo.vue').default);
-// Vue.component('vote', require('./components/Vote.vue').default);
-// Vue.component('answers', require('./components/Answers.vue').default);
-// Vue.component('question', require('./components/Question.vue').default);
-// Vue.component('page', require('./components/Page.vue').default);
 Vue.component('question-page', require('./pages/QuestionPage.vue').default);
-
-
-
-
-
-
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
@@ -51,4 +38,5 @@ Vue.component('question-page', require('./pages/QuestionPage.vue').default);
 
 const app = new Vue({
     el: '#app',
+    router
 });

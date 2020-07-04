@@ -31,7 +31,6 @@ class LoginController extends Controller
     public function destroy(Request $request)
     {
         $request->user()->token()->revoke();
-
         return response()->noContent();
     }
 }
