@@ -6,6 +6,8 @@ export default {
             if (!window.Auth.signedIn) {
                 return false;
             }
+            // console.log(policy);
+            // console.log(model);
 
             if (typeof policy === "string" && typeof model === "object") {
                 const user = window.Auth.user;

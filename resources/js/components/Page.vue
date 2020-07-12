@@ -1,16 +1,15 @@
 <template>
-<div class="container">
+    <div class="container">
         <question :question="question"></question>
         <answers :question="question"></answers>
-</div>
-
+    </div>
 </template>
 <script>
 import Answers from "./Answers";
 import Question from "./Question";
 
 export default {
-    props: ['question'],
+    props: ["question"],
     components: {
         Answers,
         Question

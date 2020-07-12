@@ -10,8 +10,9 @@
                                 <a
                                     href="/questions"
                                     class="btn btn-outline-secondary"
-                                    >Back</a
                                 >
+                                    Back
+                                </a>
                             </div>
                         </div>
                         <hr />
@@ -22,7 +23,7 @@
                             :model="question"
                             name="question"
                         ></vote>
-                        <div class="media-body  text-justify">
+                        <div class="media-body text-justify">
                             <form
                                 v-show="
                                     authorize('modify', question) && editing
@@ -78,8 +79,9 @@
                                             v-if="authorize('modify', question)"
                                             @click.prevent="edit"
                                             class="btn btn-outline-info btn-sm btn-block"
-                                            >Edit</a
                                         >
+                                            Edit
+                                        </a>
                                         <a
                                             v-if="
                                                 authorize(
@@ -89,14 +91,17 @@
                                             "
                                             @click.prevent="destroy"
                                             class="btn btn-outline-danger btn-sm btn-block mt-2"
-                                            >Delete</a
                                         >
+                                            Delete
+                                        </a>
                                     </div>
                                 </div>
                             </div>
                             <div class="float-right">
-                                <user-info :model="question" label="Asked">
-                                </user-info>
+                                <user-info
+                                    :model="question"
+                                    label="Asked"
+                                ></user-info>
                             </div>
                         </div>
                     </div>

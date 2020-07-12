@@ -74,7 +74,7 @@ export default {
                     }
                 );
 
-                return
+                return;
             }
 
             axios.post(this.endpoint, { vote }).then(res => {

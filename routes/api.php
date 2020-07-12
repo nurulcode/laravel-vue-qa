@@ -18,7 +18,6 @@ Route::post('/login', 'Api\Auth\LoginController@store');
 Route::post('/register','Api\Auth\RegisterController');
 
 
-
 Route::get('/questions', 'Api\QuestionsController@index');
 Route::get('/questions/{question}/answers', 'Api\AnswerController@index');
 
