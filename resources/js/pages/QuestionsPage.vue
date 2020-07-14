@@ -7,9 +7,12 @@
                         <div class="d-flex align-items-center">
                             <h2>All Questions</h2>
                             <div class="ml-auto">
-                                <a href="#" class="btn btn-outline-secondary">
+                                <router-link
+                                    :to="{ name: 'questions.create' }"
+                                    class="btn btn-outline-secondary"
+                                >
                                     Ask Question
-                                </a>
+                                </router-link>
                             </div>
                         </div>
                     </div>
@@ -21,8 +24,8 @@
 </template>
 
 <script>
-import Questions from '../components/Questions'
+import Questions from "../components/Questions";
 export default {
-    components : { Questions}
-}
+    components: { Questions }
+};
 </script>

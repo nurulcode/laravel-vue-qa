@@ -19,20 +19,22 @@
                     <a href="#">{{ question.title }}</a>
                 </h3>
                 <div class="ml-auto">
-                    <a
-                        href="#"
+                    <router-link
+                        :to="{
+                            name: 'questions.edit',
+                            params: { id: question.id }
+                        }"
                         v-if="authorize('modify', question)"
                         class="btn btn-outline-info btn-sm btn-block"
                     >
                         Edit
-                    </a>
+                    </router-link>
 
                     <form
                         action="#"
                         v-if="authorize('deleteQuestion', question)"
                         method="post"
                     >
-                        @method('DELETE') @csrf
                         <button
                             type="submit"
                             class="btn btn-outline-danger btn-sm btn-block mt-2"
