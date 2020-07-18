@@ -16,7 +16,13 @@
         <div class="media-body">
             <div class="d-flex align-items-center">
                 <h3 class="mt-0 text-justify mr-2">
-                    <a href="#">{{ question.title }}</a>
+                    <router-link
+                        :to="{
+                            name: 'questions.show',
+                            params: { slug: question.slug }
+                        }"
+                        >{{ question.title }}</router-link
+                    >
                 </h3>
                 <div class="ml-auto">
                     <router-link
@@ -30,19 +36,13 @@
                         Edit
                     </router-link>
 
-                    <form
-                        action="#"
+                    <button
                         v-if="authorize('deleteQuestion', question)"
-                        method="post"
+                        class="btn btn-outline-danger btn-sm btn-block mt-2"
+                        @click="destroy"
                     >
-                        <button
-                            type="submit"
-                            class="btn btn-outline-danger btn-sm btn-block mt-2"
-                            onclick="return confirm('Are you sure?')"
-                        >
-                            Delete
-                        </button>
-                    </form>
+                        Delete
+                    </button>
                 </div>
             </div>
             <p class="lead">
@@ -58,11 +58,24 @@
 </template>
 
 <script>
+import destroy from "../mixins/destory";
 export default {
     props: ["question"],
+    mixins: [destroy],
     methods: {
         str_plural(str, count) {
             return str + (count > 1 ? "s" : "");
+        },
+
+        delete() {
+            axios.delete("/questions/" + this.question.id).then(({ data }) => {
+                this.$toast.success(data.message, "Success", {
+                    timeout: 3000,
+                    position: "topRight"
+                });
+
+                this.$emit("deleted");
+            });
         }
     },
     computed: {

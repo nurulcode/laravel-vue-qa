@@ -7,7 +7,7 @@
                 @submit.prevent="update"
             >
                 <div class="form-group">
-                     <m-editor :body="body" :name="uniqueName">
+                    <m-editor :body="body" :name="uniqueName">
                         <textarea
                             v-model="body"
                             rows="5"
@@ -36,17 +36,19 @@
                             v-if="authorize('modify', answer)"
                             @click.prevent="edit"
                             class="btn btn-outline-info btn-sm btn-block"
-                            >Edit</a
                         >
+                            Edit
+                        </a>
                         <a
                             v-if="authorize('modify', answer)"
                             @click.prevent="destroy"
                             class="btn btn-outline-danger btn-sm btn-block mt-2"
-                            >Delete</a
                         >
+                            Delete
+                        </a>
                     </div>
                 </div>
-            </div>
+            </div>Answers
             <div class="float-right">
                 <user-info :model="answer" label="Answered"> </user-info>
             </div>
@@ -111,7 +113,7 @@ export default {
             return `/questions/${this.questionId}/answers/${this.id}`;
         },
         uniqueName() {
-            return `answer-${this.id}`
+            return `answer-${this.id}`;
         }
     }
 };

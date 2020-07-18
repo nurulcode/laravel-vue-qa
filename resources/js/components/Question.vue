@@ -112,6 +112,7 @@
 </template>
 <script>
 import modification from "../mixins/modification";
+import { EventBus } from "../event-bus";
 
 export default {
     props: ["question"],
@@ -126,6 +127,12 @@ export default {
             id: this.question.id,
             beforeEditCache: null
         };
+    },
+    mounted() {
+        EventBus.$on("answers-count-changed", count => {
+            console.log(count);
+            this.question.answers_count = count;
+        });
     },
     methods: {
         setEditCache() {
@@ -151,6 +158,7 @@ export default {
                     timeout: 2500,
                     position: "topRight"
                 });
+                this.$router.push({ name: "questions" });
             });
 
             setTimeout(() => {

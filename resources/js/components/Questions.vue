@@ -2,7 +2,8 @@
     <div class="card-body">
         <div v-if="questions.length">
             <question-excerpt
-                v-for="question in questions"
+                @deleted="remove(index)"
+                v-for="(question, index) in questions"
                 :key="question.id"
                 :question="question"
             ></question-excerpt>
@@ -47,6 +48,13 @@ export default {
                     this.meta = data.meta;
                     this.links = data.links;
                 });
+        },
+
+        remove(index) {
+            console.log(index);
+            
+            this.questions.splice(index, 1);
+            this.count--;
         }
     }
 };

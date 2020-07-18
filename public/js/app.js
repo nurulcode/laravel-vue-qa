@@ -2335,6 +2335,8 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: ["answer"],
@@ -2407,6 +2409,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _Answer__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Answer */ "./resources/js/components/Answer.vue");
 /* harmony import */ var _NewAnswer__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./NewAnswer */ "./resources/js/components/NewAnswer.vue");
 /* harmony import */ var _mixins_highlight__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../mixins/highlight */ "./resources/js/mixins/highlight.js");
+/* harmony import */ var _event_bus__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../event-bus */ "./resources/js/event-bus.js");
 function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
 
 function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
@@ -2455,6 +2458,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 
 
 
+
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: ["question"],
   mixins: [_mixins_highlight__WEBPACK_IMPORTED_MODULE_2__["default"]],
@@ -2468,7 +2472,8 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       count: this.question.answers_count,
       answers: [],
       nextUrl: null,
-      load: 'Load Answers'
+      load: "Load Answers",
+      excludeAnswers: []
     };
   },
   created: function created() {
@@ -2476,13 +2481,22 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
   },
   methods: {
     add: function add(answer) {
+      // this.excludeAnswers.push(answer);
       this.answers.push(answer);
       this.count++;
       this.highlight();
+
+      if (this.count === 1) {
+        _event_bus__WEBPACK_IMPORTED_MODULE_3__["EventBus"].$emit("answers-count-changed", this.count);
+      }
     },
     remove: function remove(index) {
       this.answers.splice(index, 1);
       this.count--;
+
+      if (this.count === 0) {
+        _event_bus__WEBPACK_IMPORTED_MODULE_3__["EventBus"].$emit("answers-count-changed", this.count);
+      }
     },
     fatch: function fatch(endpoint) {
       var _this = this;
@@ -2492,15 +2506,25 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 
         var data = _ref.data;
 
-        (_this$answers = _this.answers).push.apply(_this$answers, _toConsumableArray(data.data));
+        (_this$answers = _this.answers).push.apply(_this$answers, _toConsumableArray(data.data)); // console.log(data);
 
-        _this.nextUrl = data.next_page_url;
+
+        _this.nextUrl = data.links.next;
       });
     }
   },
   computed: {
     title: function title() {
-      return this.count + " " + (this.count > 1 ? "Answers" : _Answer__WEBPACK_IMPORTED_MODULE_0__["default"]);
+      return this.count + " " + (this.count > 1 ? "Answers" : "Answer");
+    },
+    theNextUrl: function theNextUrl() {
+      if (this.nextUrl && this.excludeAnswers.lenght) {
+        return this.nextUrl + this.excludeAnswers.map(function (a) {
+          return "&excludes[]=" + a.id;
+        }).join("");
+      }
+
+      return this.nextUrl;
     }
   }
 });
@@ -2823,6 +2847,7 @@ __webpack_require__.r(__webpack_exports__);
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _mixins_modification__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../mixins/modification */ "./resources/js/mixins/modification.js");
+/* harmony import */ var _event_bus__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../event-bus */ "./resources/js/event-bus.js");
 //
 //
 //
@@ -2936,6 +2961,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 
+
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: ["question"],
   mixins: [_mixins_modification__WEBPACK_IMPORTED_MODULE_0__["default"]],
@@ -2947,6 +2973,14 @@ __webpack_require__.r(__webpack_exports__);
       id: this.question.id,
       beforeEditCache: null
     };
+  },
+  mounted: function mounted() {
+    var _this = this;
+
+    _event_bus__WEBPACK_IMPORTED_MODULE_1__["EventBus"].$on("answers-count-changed", function (count) {
+      console.log(count);
+      _this.question.answers_count = count;
+    });
   },
   methods: {
     setEditCache: function setEditCache() {
@@ -2966,12 +3000,16 @@ __webpack_require__.r(__webpack_exports__);
       };
     },
     "delete": function _delete() {
-      var _this = this;
+      var _this2 = this;
 
       axios["delete"](this.endpoint).then(function (res) {
-        _this.$toast.success(res.data.message, "Success", {
+        _this2.$toast.success(res.data.message, "Success", {
           timeout: 2500,
           position: "topRight"
+        });
+
+        _this2.$router.push({
+          name: "questions"
         });
       });
       setTimeout(function () {
@@ -3003,6 +3041,7 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _mixins_destory__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../mixins/destory */ "./resources/js/mixins/destory.js");
 //
 //
 //
@@ -3062,11 +3101,27 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: ["question"],
+  mixins: [_mixins_destory__WEBPACK_IMPORTED_MODULE_0__["default"]],
   methods: {
     str_plural: function str_plural(str, count) {
       return str + (count > 1 ? "s" : "");
+    },
+    "delete": function _delete() {
+      var _this = this;
+
+      axios["delete"]("/questions/" + this.question.id).then(function (_ref) {
+        var data = _ref.data;
+
+        _this.$toast.success(data.message, "Success", {
+          timeout: 3000,
+          position: "topRight"
+        });
+
+        _this.$emit("deleted");
+      });
     }
   },
   computed: {
@@ -3221,6 +3276,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -3253,6 +3309,11 @@ __webpack_require__.r(__webpack_exports__);
         _this.meta = data.meta;
         _this.links = data.links;
       });
+    },
+    remove: function remove(index) {
+      console.log(index);
+      this.questions.splice(index, 1);
+      this.count--;
     }
   }
 });
@@ -3558,14 +3619,33 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-  props: ['question'],
+  props: ["slug"],
   components: {
     Answers: _components_Answers__WEBPACK_IMPORTED_MODULE_0__["default"],
     Question: _components_Question__WEBPACK_IMPORTED_MODULE_1__["default"]
+  },
+  data: function data() {
+    return {
+      question: {}
+    };
+  },
+  mounted: function mounted() {
+    this.fetchQuestion();
+  },
+  methods: {
+    fetchQuestion: function fetchQuestion() {
+      var _this = this;
+
+      axios.get("/questions/".concat(this.slug)).then(function (_ref) {
+        var data = _ref.data;
+        _this.question = data.data;
+      })["catch"](function (err) {
+        return console.log(err);
+      });
+    }
   }
 });
 
@@ -56154,7 +56234,11 @@ var render = function() {
                           }
                         }
                       },
-                      [_vm._v("Edit")]
+                      [
+                        _vm._v(
+                          "\n                        Edit\n                    "
+                        )
+                      ]
                     )
                   : _vm._e(),
                 _vm._v(" "),
@@ -56171,14 +56255,18 @@ var render = function() {
                           }
                         }
                       },
-                      [_vm._v("Delete")]
+                      [
+                        _vm._v(
+                          "\n                        Delete\n                    "
+                        )
+                      ]
                     )
                   : _vm._e()
               ])
             ])
           ]
         ),
-        _vm._v(" "),
+        _vm._v("Answers\n        "),
         _c(
           "div",
           { staticClass: "float-right" },
@@ -56243,7 +56331,7 @@ var render = function() {
                       })
                     }),
                     _vm._v(" "),
-                    _vm.nextUrl
+                    _vm.theNextUrl
                       ? _c("div", { staticClass: "text-center mt-3" }, [
                           _c(
                             "button",
@@ -56252,7 +56340,7 @@ var render = function() {
                               on: {
                                 click: function($event) {
                                   $event.preventDefault()
-                                  return _vm.fatch(_vm.nextUrl)
+                                  return _vm.fatch(_vm.theNextUrl)
                                 }
                               }
                             },
@@ -56882,11 +56970,25 @@ var render = function() {
     _vm._v(" "),
     _c("div", { staticClass: "media-body" }, [
       _c("div", { staticClass: "d-flex align-items-center" }, [
-        _c("h3", { staticClass: "mt-0 text-justify mr-2" }, [
-          _c("a", { attrs: { href: "#" } }, [
-            _vm._v(_vm._s(_vm.question.title))
-          ])
-        ]),
+        _c(
+          "h3",
+          { staticClass: "mt-0 text-justify mr-2" },
+          [
+            _c(
+              "router-link",
+              {
+                attrs: {
+                  to: {
+                    name: "questions.show",
+                    params: { slug: _vm.question.slug }
+                  }
+                }
+              },
+              [_vm._v(_vm._s(_vm.question.title))]
+            )
+          ],
+          1
+        ),
         _vm._v(" "),
         _c(
           "div",
@@ -56909,24 +57011,14 @@ var render = function() {
               : _vm._e(),
             _vm._v(" "),
             _vm.authorize("deleteQuestion", _vm.question)
-              ? _c("form", { attrs: { action: "#", method: "post" } }, [
-                  _c(
-                    "button",
-                    {
-                      staticClass:
-                        "btn btn-outline-danger btn-sm btn-block mt-2",
-                      attrs: {
-                        type: "submit",
-                        onclick: "return confirm('Are you sure?')"
-                      }
-                    },
-                    [
-                      _vm._v(
-                        "\n                        Delete\n                    "
-                      )
-                    ]
-                  )
-                ])
+              ? _c(
+                  "button",
+                  {
+                    staticClass: "btn btn-outline-danger btn-sm btn-block mt-2",
+                    on: { click: _vm.destroy }
+                  },
+                  [_vm._v("\n                    Delete\n                ")]
+                )
               : _vm._e()
           ],
           1
@@ -57100,10 +57192,15 @@ var render = function() {
     _vm.questions.length
       ? _c(
           "div",
-          _vm._l(_vm.questions, function(question) {
+          _vm._l(_vm.questions, function(question, index) {
             return _c("question-excerpt", {
               key: question.id,
-              attrs: { question: question }
+              attrs: { question: question },
+              on: {
+                deleted: function($event) {
+                  return _vm.remove(index)
+                }
+              }
             })
           }),
           1
@@ -57447,16 +57544,18 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c(
-    "div",
-    { staticClass: "container" },
-    [
-      _c("question", { attrs: { question: _vm.question } }),
-      _vm._v(" "),
-      _c("answers", { attrs: { question: _vm.question } })
-    ],
-    1
-  )
+  return _vm.question.id
+    ? _c(
+        "div",
+        { staticClass: "container" },
+        [
+          _c("question", { attrs: { question: _vm.question } }),
+          _vm._v(" "),
+          _c("answers", { attrs: { question: _vm.question } })
+        ],
+        1
+      )
+    : _vm._e()
 }
 var staticRenderFns = []
 render._withStripped = true
@@ -72821,7 +72920,7 @@ __webpack_require__.r(__webpack_exports__);
     return user.id === model.user.id;
   },
   accept: function accept(user, answer) {
-    return user.id === answer.question.user.id;
+    return user.id === answer.question_user_id;
   },
   deleteQuestion: function deleteQuestion(user, question) {
     return user.id === question.user.id && question.answers_count < 1;
@@ -73790,6 +73889,91 @@ var EventBus = new vue__WEBPACK_IMPORTED_MODULE_0___default.a();
 
 /***/ }),
 
+/***/ "./resources/js/mixins/destory.js":
+/*!****************************************!*\
+  !*** ./resources/js/mixins/destory.js ***!
+  \****************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony default export */ __webpack_exports__["default"] = ({
+  methods: {
+    destroy: function destroy() {
+      var _this = this;
+
+      this.$toast.question('Are you sure about that?', "Confirm", {
+        timeout: 20000,
+        close: false,
+        overlay: true,
+        displayMode: 'once',
+        id: 'question',
+        zindex: 999,
+        title: 'Hey',
+        position: 'center',
+        buttons: [['<button><b>YES</b></button>', function (instance, toast) {
+          _this["delete"]();
+
+          instance.hide({
+            transitionOut: 'fadeOut'
+          }, toast, 'button');
+        }, true], ['<button>NO</button>', function (instance, toast) {
+          instance.hide({
+            transitionOut: 'fadeOut'
+          }, toast, 'button');
+        }]]
+      });
+    },
+    // destroy() {
+    //     this.$toast.question("Are you sure about that?", "Confirm", {
+    //         timeout: 20000,
+    //         close: false,
+    //         overlay: true,
+    //         displayMode: "once",
+    //         id: "question",
+    //         zindex: 999,
+    //         title: "Hey",
+    //         message: "",
+    //         position: "center",
+    //         buttons: [
+    //             [
+    //                 "<button><b>YES</b></button>",
+    //                 (instance, toast) => {
+    //                     this.delete();
+    //                     instance.hide(
+    //                         { transitionOut: "fadeOut" },
+    //                         toast,
+    //                         "button"
+    //                     );
+    //                 },
+    //                 true
+    //             ],
+    //             [
+    //                 "<button>NO</button>",
+    //                 function(instance, toast) {
+    //                     instance.hide(
+    //                         { transitionOut: "fadeOut" },
+    //                         toast,
+    //                         "button"
+    //                     );
+    //                 }
+    //             ]
+    //         ],
+    //         onClosing: function(instance, toast, closedBy) {
+    //             console.info("Closing | closedBy: " + closedBy);
+    //         },
+    //         onClosed: function(instance, toast, closedBy) {
+    //             console.info("Closed | closedBy: " + closedBy);
+    //         }
+    //     });
+    // },
+    "delete": function _delete() {}
+  }
+});
+
+/***/ }),
+
 /***/ "./resources/js/mixins/highlight.js":
 /*!******************************************!*\
   !*** ./resources/js/mixins/highlight.js ***!
@@ -73829,6 +74013,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _components_UserInfo__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../components/UserInfo */ "./resources/js/components/UserInfo.vue");
 /* harmony import */ var _components_MEditor__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../components/MEditor */ "./resources/js/components/MEditor.vue");
 /* harmony import */ var _highlight__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./highlight */ "./resources/js/mixins/highlight.js");
+/* harmony import */ var _destory__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./destory */ "./resources/js/mixins/destory.js");
+
 
 
 
@@ -73844,7 +74030,7 @@ __webpack_require__.r(__webpack_exports__);
       editing: false
     };
   },
-  mixins: [_highlight__WEBPACK_IMPORTED_MODULE_3__["default"]],
+  mixins: [_highlight__WEBPACK_IMPORTED_MODULE_3__["default"], _destory__WEBPACK_IMPORTED_MODULE_4__["default"]],
   methods: {
     edit: function edit() {
       this.setEditCache();
@@ -73872,39 +74058,6 @@ __webpack_require__.r(__webpack_exports__);
       });
     },
     payload: function payload() {},
-    destroy: function destroy() {
-      var _this2 = this;
-
-      this.$toast.question("Are you sure about that?", "Confirm", {
-        timeout: 20000,
-        close: false,
-        overlay: true,
-        displayMode: "once",
-        id: "question",
-        zindex: 999,
-        title: "Hey",
-        message: "",
-        position: "center",
-        buttons: [["<button><b>YES</b></button>", function (instance, toast) {
-          _this2["delete"]();
-
-          instance.hide({
-            transitionOut: "fadeOut"
-          }, toast, "button");
-        }, true], ["<button>NO</button>", function (instance, toast) {
-          instance.hide({
-            transitionOut: "fadeOut"
-          }, toast, "button");
-        }]],
-        onClosing: function onClosing(instance, toast, closedBy) {
-          console.info("Closing | closedBy: " + closedBy);
-        },
-        onClosed: function onClosed(instance, toast, closedBy) {
-          console.info("Closed | closedBy: " + closedBy);
-        }
-      });
-    },
-    "delete": function _delete() {},
     toastSuccess: function toastSuccess(res) {
       this.$toast.success(res.data.message, "Success", {
         timeout: 3000,
@@ -74390,7 +74543,8 @@ var routes = [{
 }, {
   path: "/questions/:slug",
   component: _pages_QuestionPage_vue__WEBPACK_IMPORTED_MODULE_1__["default"],
-  name: "questions.show"
+  name: "questions.show",
+  props: true
 }, {
   path: "*",
   component: _pages_NotFoundPage_vue__WEBPACK_IMPORTED_MODULE_3__["default"]

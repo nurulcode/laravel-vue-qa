@@ -15,9 +15,9 @@
                             :key="answer.id"
                         ></answer>
 
-                        <div class="text-center mt-3" v-if="nextUrl">
+                        <div class="text-center mt-3" v-if="theNextUrl">
                             <button
-                                @click.prevent="fatch(nextUrl)"
+                                @click.prevent="fatch(theNextUrl)"
                                 class="btn btn-outline-secondary"
                             >
                                 {{ load }}
@@ -34,16 +34,15 @@
 <script>
 import Answer from "./Answer";
 import NewAnswer from "./NewAnswer";
-import highlight from '../mixins/highlight'
-
+import highlight from "../mixins/highlight";
+import { EventBus } from "../event-bus";
 
 export default {
     props: ["question"],
     mixins: [highlight],
     components: {
         Answer,
-        NewAnswer,
-
+        NewAnswer
     },
     data() {
         return {
@@ -51,7 +50,8 @@ export default {
             count: this.question.answers_count,
             answers: [],
             nextUrl: null,
-            load: 'Load Answers'
+            load: "Load Answers",
+            excludeAnswers: []
         };
     },
 
@@ -61,24 +61,43 @@ export default {
 
     methods: {
         add(answer) {
+            // this.excludeAnswers.push(answer);
             this.answers.push(answer);
             this.count++;
-            this.highlight()
+            this.highlight();
+            if (this.count === 1) {
+                EventBus.$emit("answers-count-changed", this.count);
+            }
         },
         remove(index) {
             this.answers.splice(index, 1);
             this.count--;
+
+            if (this.count === 0) {
+                EventBus.$emit("answers-count-changed", this.count);
+            }
         },
         fatch(endpoint) {
             axios.get(endpoint).then(({ data }) => {
                 this.answers.push(...data.data);
-                this.nextUrl = data.next_page_url;
+                // console.log(data);
+                this.nextUrl = data.links.next;
             });
         }
     },
     computed: {
         title() {
-            return this.count + " " + (this.count > 1 ? "Answers" : Answer);
+            return this.count + " " + (this.count > 1 ? "Answers" : "Answer");
+        },
+
+        theNextUrl() {
+            if (this.nextUrl && this.excludeAnswers.lenght) {
+                return (
+                    this.nextUrl +
+                    this.excludeAnswers.map(a => "&excludes[]=" + a.id).join("")
+                );
+            }
+            return this.nextUrl;
         }
     }
 };
