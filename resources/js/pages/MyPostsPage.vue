@@ -1,3 +1,148 @@
-     <template>
-         <h1> User </h1>
-     </template>
+<template>
+    <div class="container">
+        <div class="col-md-12">
+            <div class="card text-center">
+                <div class="card-header">
+                    <ul class="nav nav-tabs card-header-tabs">
+                        <li class="nav-item">
+                            <router-link
+                                exact
+                                class="nav-link"
+                                :to="{ name: 'my-posts' }"
+                            >
+                                All
+                            </router-link>
+                        </li>
+                        <li class="nav-item">
+                            <router-link
+                                exact
+                                class="nav-link"
+                                :to="{
+                                    name: 'my-posts',
+                                    query: { type: 'questions' }
+                                }"
+                            >
+                                Questions
+                            </router-link>
+                        </li>
+                        <li class="nav-item">
+                            <router-link
+                                exact
+                                class="nav-link"
+                                :to="{
+                                    name: 'my-posts',
+                                    query: { type: 'answers' }
+                                }"
+                            >
+                                Answers
+                            </router-link>
+                        </li>
+                    </ul>
+                </div>
+                <div class="card-body">
+                    <ul class="list-group list-group-flush" v-if="posts.length">
+                        <li
+                            class="list-group-item"
+                            v-for="(post, index) in posts"
+                            :key="index"
+                        >
+                            <div class="row">
+                                <div class="col">
+                                    <span
+                                        class="post-badge"
+                                        :class="{ accepted: post.accepted }"
+                                    >
+                                        {{ post.type }}
+                                    </span>
+                                    <span
+                                        class="ml-4 votes-count"
+                                        :class="{ accepted: post.accepted }"
+                                    >
+                                        {{ post.votes_count }}
+                                    </span>
+                                </div>
+                                <div class="col-md-9">
+                                    {{ post.title }}
+                                </div>
+                                <div class="col text-right">
+                                    {{ post.created_at }}
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                    <div v-else class="alert alert-warning">
+                        <p>You have no any questions or answers</p>
+                        <p>
+                            <router-link :to="{ name: 'questions.create' }">
+                                Ask Question
+                            </router-link>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>
+
+<style lang="scss" scoped>
+$color-green: rgba(95, 187, 126);
+
+.votes-count {
+    border: 1px solid #ddd;
+    min-width: 40px;
+    display: inline-block;
+    text-align: center;
+    color: $color-green;
+
+    &.accepted {
+        border: 1px solid $color-green;
+        background: $color-green;
+        color: #fff;
+    }
+}
+
+.post-badge {
+    border: 1px solid #ddd;
+    width: 25px;
+    display: inline-block;
+    text-align: center;
+    border-radius: 100%;
+
+    &.accepted {
+        border: 1px solid $color-green;
+        background: $color-green;
+        color: #fff;
+    }
+}
+</style>
+
+<script>
+export default {
+    data() {
+        return {
+            posts: []
+        };
+    },
+
+    mounted() {
+        this.fetchPosts();
+    },
+
+    methods: {
+        fetchPosts() {
+            axios
+                .get("/my-posts", { params: this.$route.query })
+                .then(({ data }) => {
+                    this.posts = data.data;
+                })
+                .catch(err => {
+                    console.log(err);
+                });
+        }
+    },
+
+    watch: {
+        $route: "fetchPosts"
+    }
+};
+</script>

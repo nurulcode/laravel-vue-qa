@@ -87,8 +87,8 @@ class User extends Authenticatable
 
             $data->push($item);
         }
-        return $data->sortBy('votes_count', 'desc')->values()->all();
-        // return $posts;
+        return $data->sortByDesc('votes_count')->values()->all();
+        // return $data;
 
     }
 
