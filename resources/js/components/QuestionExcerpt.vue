@@ -59,6 +59,7 @@
 
 <script>
 import destroy from "../mixins/destory";
+import { EventBus } from "../event-bus";
 export default {
     props: ["question"],
     mixins: [destroy],
@@ -74,7 +75,8 @@ export default {
                     position: "topRight"
                 });
 
-                this.$emit("deleted");
+                EventBus.$emit("deleted", this.question.id);
+                this.$root.enableInterceptor();
             });
         }
     },

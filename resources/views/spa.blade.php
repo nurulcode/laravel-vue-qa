@@ -85,7 +85,9 @@
 
         <main class="py-4">
             {{-- @yield('content') --}}
-            <router-view></router-view>
+            <transition class="fade" mode="out-in">
+                <router-view></router-view>
+            </transition>
         </main>
     </div>
 

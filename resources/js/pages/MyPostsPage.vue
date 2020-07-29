@@ -40,7 +40,12 @@
                     </ul>
                 </div>
                 <div class="card-body">
-                    <ul class="list-group list-group-flush" v-if="posts.length">
+                    <spinner v-if="$root.loading"></spinner>
+
+                    <ul
+                        class="list-group list-group-flush"
+                        v-else-if="posts.length"
+                    >
                         <li
                             class="list-group-item"
                             v-for="(post, index) in posts"

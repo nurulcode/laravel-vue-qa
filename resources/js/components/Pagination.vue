@@ -1,7 +1,11 @@
 <template>
     <div class="row align-items-center">
         <div class="col">
-            <button :disabled="isFirst" @click="prev" class="btn btn-outline-secondary">
+            <button
+                :disabled="isFirst"
+                @click="prev"
+                class="btn btn-outline-secondary"
+            >
                 Newer
             </button>
         </div>
@@ -13,7 +17,11 @@
         <!-- 2nd column -->
 
         <div class="col text-right">
-            <button :disabled="isLast" @click="next" class="btn btn-outline-secondary">
+            <button
+                :disabled="isLast"
+                @click="next"
+                class="btn btn-outline-secondary"
+            >
                 Older
             </button>
         </div>
@@ -25,7 +33,11 @@ export default {
     props: ["meta", "links"],
     computed: {
         pageInfo() {
-            return `Page ${this.meta.current_page} of ${this.meta.last_page}`;
+            let cp = this.meta.current_page || 1
+            let lp =  this.meta.last_page || 1
+            return `Page ${cp} of ${lp}`;
+
+            // return `Page ${this.meta.current_page} of ${this.meta.last_page}`;
         },
         isFirst() {
             return this.meta.current_page === 1;
@@ -51,10 +63,10 @@ export default {
         },
 
         next() {
-            if (! this.isLast) {
-                this.meta.current_page++
+            if (!this.isLast) {
+                this.meta.current_page++;
             }
-            this.switchPage()
+            this.switchPage();
         }
     }
 };

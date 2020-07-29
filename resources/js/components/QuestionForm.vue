@@ -7,6 +7,7 @@
                 name="title"
                 :class="errorClass('title')"
                 v-model="title"
+                required
             />
             <div v-if="errors['title'][0]" class="invalid-feedback">
                 <strong>{{ errors["title"][0] }}</strong>
@@ -21,6 +22,7 @@
                     :class="errorClass('body')"
                     v-model="body"
                     rows="10"
+                    required
                 >
                 </textarea>
                 <div v-if="errors['body'][0]" class="invalid-feedback">

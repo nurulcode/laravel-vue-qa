@@ -40,13 +40,16 @@ export default {
                 .post("/questions", data)
                 .then(({ data }) => {
                     this.$router.push({ name: "questions" });
-                    this.$toast.success(data.message, "Success", {
-                        timeout: 3000,
-                        position: "topRight"
-                    });
                 })
                 .catch(({ response }) => {
-                    EventBus.$emit("error", response.data.errors);
+                    if (response.status == 500) {
+                        this.$toast.success("duplikat data", "Success", {
+                            timeout: 3000,
+                            position: "topRight"
+                        });
+                    } else {
+                        EventBus.$emit("error", response.data.errors);
+                    }
                 });
         }
     }
